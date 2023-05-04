@@ -2,16 +2,16 @@ import { createPool, sql } from '@vercel/postgres';
 
 async function seed() {
   const createTable = await sql`
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS positions (
       id SERIAL PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) UNIQUE NOT NULL,
-      image VARCHAR(255),
+      opening VARCHAR(255) NOT NULL,
+      pgn VARCHAR(255) UNIQUE NOT NULL,
+      note VARCHAR(255),
       "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
     `;
 
-  console.log(`Created "users" table`);
+  console.log(`Created "positions" table`);
 
   const users = await Promise.all([
     sql`
@@ -38,31 +38,33 @@ async function seed() {
   };
 }
 export default defineEventHandler(async () => {
-	const startTime = Date.now();
-	const db = createPool();
+  const startTime = Date.now();
+  const db = createPool({
+    connectionString: process.env.POSTGRES_URL,
+  });
   try {
-		const { rows: users } = await db.query('SELECT * FROM users');
-		const duration = Date.now() - startTime;
+    const { rows: positions } = await db.query('SELECT * FROM positions');
+    const duration = Date.now() - startTime;
     return {
-      users: users,
+      positions: positions,
       duration: duration
     };
-	} catch (error) {
-		// @ts-ignore
-		if (error?.message === `relation "users" does not exist`) {
+  } catch (error) {
+    // @ts-ignore
+    if (error?.message === `relation "positions" does not exist`) {
       console.log(
         "Table does not exist, creating and seeding it with dummy data now..."
       );
       // Table is not created yet
       await seed();
-      const { rows: users } = await db.query('SELECT * FROM users');
+      const { rows: positions } = await db.query('SELECT * FROM users');
       const duration = Date.now() - startTime;
       return {
-        users: users,
+        positions: positions,
         duration: duration
       };
     } else {
       throw error;
     }
-	}
+  }
 });
