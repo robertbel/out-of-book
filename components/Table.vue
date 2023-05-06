@@ -1,30 +1,25 @@
 <template>
-  <div class="w-full max-w-xl p-12 mx-auto rounded-lg shadow-xl dark:bg-white/10 bg-white/30 ring-1 ring-gray-900/5 backdrop-blur-lg">
-    <div class="flex items-center justify-between mb-4">
-      <div class="space-y-1">
-        <h2 class="text-xl font-semibold">Recent Games</h2>
-      </div>
-    </div>
-    <div class="divide-y divide-gray-900/5">
-      <div v-for="dbrecord in dbrecords" :key="dbrecord.id" class="flex items-center justify-between py-3">
-        <div class="flex items-center space-x-4">
-          <div class="space-y-1">
-            <p class="font-medium leading-none">{{ dbrecord?.pgn }}</p>
-            <p class="text-sm text-gray-500">{{ dbrecord?.date_played }}</p>
-          </div>
-        </div>
-      </div>
+  <div>
+    <div v-for="dbrecord in dbrecords" :key="dbrecord.id">
+      <TheChessboard @board-created="(api) => (loadPgn(api, dbrecord?.pgn))" />
+      <p>{{ dbrecord?.pgn }}</p>
+      <p>{{ dbrecord?.date_played }}</p>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    dbrecords: {
-      type: Array,
-      required: true,
-    }
+<script setup>
+import { TheChessboard } from 'vue3-chessboard';
+import 'vue3-chessboard/style.css';
+
+const props = defineProps({
+  dbrecords: {
+    type: Array,
+    required: true,
   }
-}
+})
+
+const loadPgn = (api, pgn) => {
+  api.loadPgn(pgn);
+};
 </script>
