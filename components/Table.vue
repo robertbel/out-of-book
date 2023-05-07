@@ -37,6 +37,8 @@ const loadPgn = (api, pgn) => {
 .game {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-block-end: 2rem;
 }
 
 .main-wrap {
