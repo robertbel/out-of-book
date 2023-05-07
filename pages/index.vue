@@ -1,7 +1,6 @@
 <template>
   <main>
-    <Table v-if="data" :dbrecords="data?.chessGames" />
-    <Rommel v-if="lala" :dbrecords="lala?.chessLines" />
+    <Table :games="data?.chessGames" :lines="lala?.chessLines" />
   </main>
 </template>
 

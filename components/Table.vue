@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div v-for="dbrecord in dbrecords" :key="dbrecord.id">
-      <TheChessboard @board-created="(api) => (loadPgn(api, dbrecord?.pgn))" />
-      <p>{{ dbrecord?.pgn }}</p>
-      <p>{{ dbrecord?.date_played }}</p>
+    {{ lines }}
+    <div v-for="game in games" :key="game.id">
+      <TheChessboard @board-created="(api) => (loadPgn(api, game?.pgn))" />
+      <p>{{ game?.pgn }}</p>
+      <p>{{ game?.date_played }}</p>
     </div>
   </div>
 </template>
@@ -13,10 +14,14 @@ import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
 const props = defineProps({
-  dbrecords: {
+  games: {
     type: Array,
     required: true,
-  }
+  },
+  lines: {
+    type: Array,
+    required: true,
+  },
 })
 
 const loadPgn = (api, pgn) => {
