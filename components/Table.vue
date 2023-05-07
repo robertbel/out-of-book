@@ -1,10 +1,12 @@
 <template>
-  <div>
-    {{ lines }}
-    <div v-for="game in games" :key="game.id">
-      <TheChessboard @board-created="(api) => (loadPgn(api, game?.pgn))" />
-      <p>{{ game?.pgn }}</p>
-      <p>{{ game?.date_played }}</p>
+  <div class="games">
+    <!-- {{ lines }} -->
+    <div v-for="game in games" :key="game.id" class="game">
+      <TheChessboard @board-created="(api) => (loadPgn(api, game?.game_data.pgn))" />
+      <div class="pgn">
+        <pre>{{ game?.game_data.pgn }}</pre>
+      </div>
+
     </div>
   </div>
 </template>
@@ -28,3 +30,26 @@ const loadPgn = (api, pgn) => {
   api.loadPgn(pgn);
 };
 </script>
+
+<style>
+.games {}
+
+.game {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.main-wrap {
+  width: 100%;
+}
+
+.pgn pre {
+  white-space: pre-wrap;
+}
+
+
+pre {
+  font-size: 0.75rem;
+
+}
+</style>

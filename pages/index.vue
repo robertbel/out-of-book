@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="main">
     <Table :games="data?.chessGames" :lines="lala?.chessLines" />
   </main>
 </template>
@@ -11,3 +11,10 @@ const { data: openingsRes } = useFetch('/api/get-openings')
 const data = gamesRes || {}
 const lala = openingsRes || {}
 </script>
+
+<style>
+.main {
+  margin: 0 auto;
+  max-width: 900px;
+}
+</style>
