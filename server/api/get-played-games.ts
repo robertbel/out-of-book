@@ -23,6 +23,8 @@ async function storeGameData(gameData) {
 }
 
 export default defineEventHandler(async () => {
+  console.log('Cron job triggered');
+
   const startTime = Date.now();
 
   try {
