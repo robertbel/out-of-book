@@ -3,8 +3,8 @@
   "ignoreCommand": "pnpm dlx turbo-ignore",
   "crons": [
     {
-      "path": "/api/hello",
-      "schedule": "*/10 * * * *"
+      "path": "/api/get-played-games",
+      "schedule": "* * * * *"
     }
   ]
 }
