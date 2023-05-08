@@ -16,5 +16,6 @@ const lala = openingsRes || {}
 .main {
   margin: 0 auto;
   max-width: 900px;
+  position: inherit;
 }
 </style>
