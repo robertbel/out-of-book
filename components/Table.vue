@@ -1,6 +1,5 @@
 <template>
   <div class="games">
-    <!-- {{ lines }} -->
     <div v-for="game in games" :key="game.id" class="game">
       <TheChessboard @board-created="(api) => (loadPgn(api, game?.game_data.pgn))" />
       <div class="pgn">
@@ -32,8 +31,6 @@ const loadPgn = (api, pgn) => {
 </script>
 
 <style>
-.games {}
-
 .game {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -47,11 +44,6 @@ const loadPgn = (api, pgn) => {
 
 .pgn pre {
   white-space: pre-wrap;
-}
-
-
-pre {
   font-size: 0.75rem;
-
 }
 </style>

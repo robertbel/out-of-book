@@ -5,8 +5,6 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
-
 const { data: openingsData } = useFetch('/api/get-openings');
 
 const gamesData = ref({ chessGames: [] });
@@ -22,7 +20,7 @@ onMounted(() => {
   // Initial data fetch
   getGames();
 
-  // Fetch data every 10 seconds
+  // Fetch data every x seconds
   const intervalId = setInterval(() => {
     getGames();
   }, 2000);
