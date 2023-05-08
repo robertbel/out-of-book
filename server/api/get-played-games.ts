@@ -1,38 +1,18 @@
 import axios from 'axios';
-import { createPool, sql } from '@vercel/postgres';
-
-async function seed() {
-  const db = createPool();
-
-  // Drop the existing table if it exists
-  await sql`
-    DROP TABLE IF EXISTS chess_games;
-  `;
-
-  // Create the table with the correct structure
-  const createTable = await sql`
-    CREATE TABLE chess_games (
-      id SERIAL PRIMARY KEY,
-      game_data JSONB NOT NULL
-    );
-  `;
-
-  console.log(`Created "chess_games" table`);
-  return createTable;
-}
-
+import { sql } from '@vercel/postgres';
 
 async function storeGameData(gameData) {
   try {
-    const db = createPool();
     const games = gameData.games;
 
     for (const game of games) {
+      const gameId = game.uuid;
       const jsonData = JSON.stringify(game);
-      console.log(jsonData);
+
       await sql`
-        INSERT INTO chess_games (game_data)
-        VALUES (${jsonData});
+        INSERT INTO chess_games (game_id, game_data)
+        VALUES (${gameId}, ${jsonData})
+        ON CONFLICT (game_id) DO NOTHING;
       `;
     }
 
@@ -42,15 +22,10 @@ async function storeGameData(gameData) {
   }
 }
 
-
 export default defineEventHandler(async () => {
   const startTime = Date.now();
-  const db = createPool();
 
   try {
-    // Ensure the table exists before fetching and storing data
-    await seed();
-
     const response = await axios.get('https://api.chess.com/pub/player/luffyyyyyyyy/games/2023/05');
     const data = response.data;
 
@@ -58,7 +33,7 @@ export default defineEventHandler(async () => {
       await storeGameData(data);
     }
 
-    const duration = Date.now() - startTime;
+    const duration = Date.now() - startTime; // ????
     return {
       data: data,
       duration: duration
