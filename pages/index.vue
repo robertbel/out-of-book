@@ -1,36 +1,37 @@
 <template>
   <main class="main">
-    <Table :games="data?.chessGames" :lines="lala?.chessLines" />
+    <Table :games="gamesData.chessGames" :lines="openingsData.chessLines" />
   </main>
 </template>
 
 <script setup>
-const { data: gamesRes } = useFetch('/api/get-games');
-const { data: openingsRes } = useFetch('/api/get-openings')
+import { onMounted, onUnmounted, ref } from 'vue';
 
-const data = gamesRes || {};
-const lala = openingsRes || {}
+const { data: openingsData } = useFetch('/api/get-openings');
+
+const gamesData = ref({ chessGames: [] });
 
 const getGames = async () => {
   console.log('Called!');
   const result = await fetch('/api/get-games');
   const newData = await result.json();
-  data.chessGames = newData.chessGames;
+  gamesData.value = newData;
 }
 
 onMounted(() => {
-  watchEffect(async () => {
-    const intervalId = setInterval(() => {
-      getGames();
-    }, 2000);
+  // Initial data fetch
+  getGames();
 
-    onUnmounted(() => {
-      clearInterval(intervalId);
-    });
+  // Fetch data every 10 seconds
+  const intervalId = setInterval(() => {
+    getGames();
+  }, 2000);
+
+  onUnmounted(() => {
+    clearInterval(intervalId);
   });
 });
 </script>
-
 
 <style>
 .main {
