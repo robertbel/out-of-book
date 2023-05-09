@@ -23,7 +23,7 @@ onMounted(() => {
   // Fetch data every x seconds
   const intervalId = setInterval(() => {
     getGames();
-  }, 20000000000);
+  }, 2000000);
 
   onUnmounted(() => {
     clearInterval(intervalId);
