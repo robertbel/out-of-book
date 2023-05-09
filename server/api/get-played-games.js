@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { sql } from '@vercel/postgres';
 
-async function storeGameData(gameData) {
+async function storeGameData(gameData, username) {
   try {
     const games = gameData.games;
 
@@ -9,10 +9,19 @@ async function storeGameData(gameData) {
       const gameId = game.uuid;
       const jsonData = JSON.stringify(game);
 
+      // Determine the orientation
+      let orientation = null;
+      if (game.white.username === username) {
+        orientation = "white";
+      } else if (game.black.username === username) {
+        orientation = "black";
+      }
+
       await sql`
-        INSERT INTO chess_games (game_id, game_data)
-        VALUES (${gameId}, ${jsonData})
-        ON CONFLICT (game_id) DO NOTHING;
+        INSERT INTO chess_games (game_id, game_data, orientation)
+        VALUES (${gameId}, ${jsonData}, ${orientation})
+        ON CONFLICT (game_id) DO UPDATE 
+        SET game_data = ${jsonData}, orientation = ${orientation};
       `;
     }
 
@@ -36,7 +45,7 @@ export default defineEventHandler(async () => {
     const data = response.data;
 
     if (data) {
-      await storeGameData(data);
+      await storeGameData(data, username);
     }
 
     return {
