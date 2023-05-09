@@ -6,23 +6,27 @@ async function storeGameData(gameData, username) {
     const games = gameData.games;
 
     for (const game of games) {
-      const gameId = game.uuid;
+      const gameId = game.url;
       const jsonData = JSON.stringify(game);
 
       // Determine the orientation
       let orientation = null;
-      if (game.white.username === username) {
+      if (game.white.username.toLowerCase() === username.toLowerCase()) {
         orientation = "white";
-      } else if (game.black.username === username) {
+      } else if (game.black.username.toLowerCase() === username.toLowerCase()) {
         orientation = "black";
       }
 
-      await sql`
-        INSERT INTO chess_games (game_id, game_data, orientation)
-        VALUES (${gameId}, ${jsonData}, ${orientation})
-        ON CONFLICT (game_id) DO UPDATE 
-        SET game_data = ${jsonData}, orientation = ${orientation};
-      `;
+      if (orientation) {
+        await sql`
+          INSERT INTO chess_games (game_id, game_data, orientation)
+          VALUES (${gameId}, ${jsonData}, ${orientation})
+          ON CONFLICT (game_id) DO UPDATE 
+          SET game_data = ${jsonData}, orientation = ${orientation};
+        `;
+      } else {
+        console.log(`Unable to determine orientation for game: ${gameId}`);
+      }
     }
 
     console.log('Game data stored successfully');
@@ -30,6 +34,7 @@ async function storeGameData(gameData, username) {
     console.error('Error storing game data:', error);
   }
 }
+
 
 export default defineEventHandler(async () => {
   console.log('Cron job triggered');

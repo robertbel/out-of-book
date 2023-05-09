@@ -3,6 +3,7 @@
     <div v-for="game in games" :key="game.id" class="game">
       <TheChessboard @board-created="(api) => (loadPgn(api, game?.game_data.pgn))" />
       <div class="pgn">
+        <p>Id: {{ game?.game_id }}</p>
         <pre>{{ game?.game_data.pgn }}</pre>
       </div>
 
