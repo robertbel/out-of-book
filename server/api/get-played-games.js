@@ -6,7 +6,7 @@ async function storeGameData(gameData, username) {
     const games = gameData.games;
 
     for (const game of games) {
-      const gameId = game.url;
+      const gameId = game.uuid;
       const jsonData = JSON.stringify(game);
 
       // Determine the orientation
@@ -16,7 +16,7 @@ async function storeGameData(gameData, username) {
       } else if (game.black.username.toLowerCase() === username.toLowerCase()) {
         orientation = "black";
       }
-
+      console.log(orientation)
       if (orientation) {
         await sql`
           INSERT INTO chess_games (game_id, game_data, orientation)
