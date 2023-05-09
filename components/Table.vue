@@ -1,9 +1,10 @@
 <template>
   <div class="games">
     <div v-for="game in games" :key="game.id" class="game">
-      <TheChessboard @board-created="(api) => (loadPgn(api, game?.game_data.pgn))" />
+      <TheChessboard :board-config="{ ...boardConfig, orientation: game?.orientation }" @board-created="(api) => (loadPgn(api, game?.game_data.pgn))" />
       <div class="pgn">
         <p>Id: {{ game?.game_id }}</p>
+        <p>Color: {{ game?.orientation }}</p>
         <pre>{{ game?.game_data.pgn }}</pre>
       </div>
 
@@ -25,6 +26,10 @@ const props = defineProps({
     required: true,
   },
 })
+
+const boardConfig = {
+  coordinates: true,
+};
 
 const loadPgn = (api, pgn) => {
   api.loadPgn(pgn);
