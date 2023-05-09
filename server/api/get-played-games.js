@@ -21,8 +21,7 @@ async function storeGameData(gameData, username) {
         await sql`
           INSERT INTO chess_games (game_id, game_data, orientation)
           VALUES (${gameId}, ${jsonData}, ${orientation})
-          ON CONFLICT (game_id) DO UPDATE 
-          SET game_data = ${jsonData}, orientation = ${orientation};
+          ON CONFLICT (game_id) DO NOTHING;
         `;
       } else {
         console.log(`Unable to determine orientation for game: ${gameId}`);
