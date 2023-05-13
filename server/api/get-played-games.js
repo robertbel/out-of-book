@@ -16,7 +16,7 @@ async function storeGameData(gameData, username) {
       } else if (game.black.username.toLowerCase() === username.toLowerCase()) {
         orientation = "black";
       }
-      console.log(orientation)
+
       if (orientation) {
         await sql`
           INSERT INTO chess_games (game_id, game_data, orientation)
@@ -36,8 +36,6 @@ async function storeGameData(gameData, username) {
 
 
 export default defineEventHandler(async () => {
-  console.log('Cron job triggered');
-
   const username = 'luffyyyyyyyy';
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();

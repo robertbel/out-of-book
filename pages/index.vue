@@ -1,7 +1,11 @@
 <template>
   <main class="main">
-    <button @click="fetchData">Fetch Data</button>
+    <div class="actions">
+      <button @click="fetchData" :disabled="isLoading">Fetch Data</button>
+      <span v-if="isFetching">Getting new games ...</span>
+    </div>
     <Table :games="gamesData.chessGames" :lines="openingsData.chessLines" />
+    <span v-if="isLoading">Loading games ...</span>
   </main>
 </template>
 
@@ -9,19 +13,22 @@
 const { data: openingsData } = useFetch('/api/get-openings');
 
 const gamesData = ref({ chessGames: [] });
+const isFetching = ref(false);
+const isLoading = ref(false);
 
 const getGames = async () => {
-  console.log('Called!');
+  isLoading.value = true;
   const result = await fetch('/api/get-games');
   const newData = await result.json();
   gamesData.value = newData;
+  isLoading.value = false;
 }
 
 const fetchData = async () => {
-  const result = await fetch('/api/get-played-games');
-  const newData = await result.json();
-  // Do something with newData if needed
+  isFetching.value = true;
+  await fetch('/api/get-played-games');
   await getGames();
+  isFetching.value = false;
 }
 
 onMounted(() => {
@@ -30,6 +37,7 @@ onMounted(() => {
 });
 
 </script>
+
 
 
 <style>
