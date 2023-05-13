@@ -1,5 +1,6 @@
 <template>
   <main class="main">
+    <button @click="fetchData">Fetch Data</button>
     <Table :games="gamesData.chessGames" :lines="openingsData.chessLines" />
   </main>
 </template>
@@ -16,20 +17,20 @@ const getGames = async () => {
   gamesData.value = newData;
 }
 
+const fetchData = async () => {
+  const result = await fetch('/api/get-played-games');
+  const newData = await result.json();
+  // Do something with newData if needed
+  await getGames();
+}
+
 onMounted(() => {
   // Initial data fetch
   getGames();
-
-  // Fetch data every x seconds
-  const intervalId = setInterval(() => {
-    getGames();
-  }, 2000000);
-
-  onUnmounted(() => {
-    clearInterval(intervalId);
-  });
 });
+
 </script>
+
 
 <style>
 .main {
