@@ -9,8 +9,7 @@
           <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">Id: {{ game?.game_id }}</NuxtLink>
         </p>
         <p>Color: {{ game?.orientation }}</p>
-        <pre>{{ game?.game_data.pgn }}</pre>
-        <!-- <pre>{{ notations[game?.game_id] }}</pre> -->
+        <pre>{{ notations[game?.game_id] }}</pre>
       </div>
     </div>
   </div>
