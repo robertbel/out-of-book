@@ -1,44 +1,26 @@
+<script setup>
+import { useGames } from '~/composables/useGames';
+
+const { games, isLoading, isFetching, getGames, fetchData } = useGames();
+
+if (games.value.length === 0) {
+  getGames()
+}
+
+</script>
+
 <template>
   <main class="main">
     <div class="actions">
       <button @click="fetchData" :disabled="isLoading">Fetch Data</button>
       <span v-if="isFetching">Getting new games ...</span>
+      <NuxtLink to="/test">Test</NuxtLink>
     </div>
-    <Table :games="gamesData.chessGames" :lines="openingsData.chessLines" />
-    <span v-if="isLoading">Loading games ...</span>
+    <Table v-if="games.chessGames" :games="games.chessGames" />
+    <span v-else-if="isLoading">Loading games ...</span>
+    <span v-else>No games found.</span>
   </main>
 </template>
-
-<script setup>
-const { data: openingsData } = useFetch('/api/get-openings');
-
-const gamesData = ref({ chessGames: [] });
-const isFetching = ref(false);
-const isLoading = ref(false);
-
-const getGames = async () => {
-  isLoading.value = true;
-  const result = await fetch('/api/get-games');
-  const newData = await result.json();
-  gamesData.value = newData;
-  isLoading.value = false;
-}
-
-const fetchData = async () => {
-  isFetching.value = true;
-  await fetch('/api/get-played-games');
-  await getGames();
-  isFetching.value = false;
-}
-
-onMounted(() => {
-  // Initial data fetch
-  getGames();
-});
-
-</script>
-
-
 
 <style>
 .main {
