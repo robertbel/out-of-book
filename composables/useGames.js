@@ -5,15 +5,14 @@ export const useGames = () => {
 
   const getGames = async () => {
     isLoading.value = true
-    const result = await fetch('/api/get-games')
-    const newData = await result.json()
-    games.value = newData
+    const { data } = await useFetch('/api/get-games')
+    games.value = data
     isLoading.value = false
   }
 
   const fetchData = async () => {
     isFetching.value = true
-    await fetch('/api/get-played-games')
+    await useFetch('/api/get-played-games')
     await getGames()
     isFetching.value = false
   }

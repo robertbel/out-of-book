@@ -5,7 +5,6 @@
         Back to homepage
       </NuxtLink>
     </div>
-    {{ testing }}
     <TheChessboard class="beebee" />
 
   </div>
