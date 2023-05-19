@@ -1,62 +1,39 @@
-import axios from 'axios';
-import { sql } from '@vercel/postgres';
+const USERNAME = process.env.CHESS_USERNAME || 'luffyyyyyyyy';
 
-const CHESS_API_BASE = 'https://api.chess.com/pub';
-const USERNAME = process.env.CHESS_USERNAME || 'luffyyyyyyyy'; // Fallback to 'luffyyyyyyyy' if not set in environment
+async function processGameData(playedGames, username) {
+  const players = [];
 
-function determineOrientation(game, username) {
-  if (game.white.username.toLowerCase() === username.toLowerCase()) {
-    return "white";
-  } else if (game.black.username.toLowerCase() === username.toLowerCase()) {
-    return "black";
+  for (const game of playedGames) {
+    players.push(username);
+    players.push(getOpponentName(game, username));
   }
 
-  console.log(`Unable to determine orientation for game: ${game.uuid}`);
-  return null;
-}
+  await insertPlayers(players);
 
-async function insertGame(game, username) {
-  const gameId = game.uuid;
-  const jsonData = JSON.stringify(game);
-  const orientation = determineOrientation(game, username);
+  for (const game of playedGames) {
+    const opponentName = getOpponentName(game, username);
+    const playedAs = getPlayedAs(game, username);
+    const gameResult = getGameResult(game, username);
 
-  if (orientation) {
-    await sql`
-      INSERT INTO chess_games (game_id, game_data, orientation)
-      VALUES (${gameId}, ${jsonData}, ${orientation})
-      ON CONFLICT (game_id) DO NOTHING;
-    `;
-  }
-}
+    const playerId = await getPlayerId(username);
+    const opponentId = await getPlayerId(opponentName);
 
-async function storeGameData(gameData, username) {
-  try {
-    const games = gameData.games;
-    for (const game of games) {
-      await insertGame(game, username);
-    }
-    console.log('Game data stored successfully');
-  } catch (error) {
-    console.error('Error storing game data:', error);
+    await insertGame(game, playerId, opponentId, playedAs, gameResult);
   }
 }
 
 export default defineEventHandler(async () => {
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-  const url = `${CHESS_API_BASE}/player/${USERNAME}/games/${currentYear}/${currentMonth}`;
-
   try {
-    const response = await axios.get(url);
-    const data = response.data;
+    const { currentYear, currentMonth } = getCurrentYearMonth();
+    const fetchedGamesData = await fetchGames(USERNAME, currentYear, currentMonth);
+    const playedGames = fetchedGamesData.games;
 
-    if (data) {
-      await storeGameData(data, USERNAME);
+    if (playedGames) {
+      await processGameData(playedGames, USERNAME);
     }
 
     return {
-      data
+      playedGames
     };
   } catch (error) {
     console.error('Error:', error);

@@ -16,7 +16,7 @@ if (games.value.length === 0) {
       <span v-if="isFetching">Getting new games ...</span>
       <NuxtLink to="/test">Test</NuxtLink>
     </div>
-    <Table v-if="games.chessGames" :games="games.chessGames" />
+    <Table v-if="games" :games="games" />
     <span v-else-if="isLoading">Loading games ...</span>
     <span v-else>No games found.</span>
   </main>
