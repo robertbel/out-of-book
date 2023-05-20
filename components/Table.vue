@@ -2,21 +2,19 @@
   <div class="games">
     <div v-for="game in games" :key="game.id" class="game">
       <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id;">
-        <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.orientation }" @board-created="(api) => (loadPgn(api, game?.game_data.pgn, game?.game_id))" />
+        <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn, game?.game_id))" />
       </NuxtLink>
       <div class="pgn">
         <p>
-          <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">Id: {{ game?.game_id }}</NuxtLink>
+          <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">Id: {{ game?.id }}</NuxtLink>
         </p>
-        <p>Color: {{ game?.orientation }}</p>
-        <pre>{{ notations[game?.game_id] }}</pre>
+        <p>Color: {{ game?.played_as }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { parse } from '@mliebelt/pgn-parser';
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
@@ -33,22 +31,12 @@ const boardConfig = {
   coordinates: true,
 };
 
-const parsedGames = ref({});
-
-const notations = computed(() => {
-  const notations = {};
-  for (const game in parsedGames.value) {
-    notations[game] = parsedGames.value[game].moves.map(move => move.notation.notation);
-  }
-  return notations;
-});
-
 const loadPgn = (api, pgn, gameId) => {
   api.loadPgn(pgn);
-  const game = parse(pgn, { startRule: "game" });
-  parsedGames.value[gameId] = game;
+  active.value = gameId; // Assuming you want to mark this game as active
 };
 </script>
+
 
 <style scoped>
 .beebee.active {
