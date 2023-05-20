@@ -1,3 +1,5 @@
+import { parse } from '@mliebelt/pgn-parser'
+
 function getPlayerColor(game, myUsername) {
   const myUsernameLower = myUsername.toLowerCase();
 
@@ -8,6 +10,13 @@ function getPlayerColor(game, myUsername) {
   } else {
     return null;
   }
+}
+
+export function getMovesFromPgn(pgn) {
+  const parsedPgn = parse(pgn, { startRule: 'games' });
+  const allMoves = parsedPgn.map(game => game.moves);
+
+  return allMoves;
 }
 
 export function getOpponentName(game, myUsername) {

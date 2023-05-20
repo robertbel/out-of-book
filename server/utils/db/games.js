@@ -11,3 +11,15 @@ export async function insertGame(game, playerId, opponentId, playedAs, gameResul
     throw error;
   }
 }
+
+export async function getGameId(game) {
+  try {
+    const result = await sql`
+      SELECT id FROM games WHERE game_link = ${game.url};
+    `;
+    return result.rows[0].id;
+  } catch (error) {
+    console.error(`Failed to get game id for: ${game}`, error);
+    throw error;
+  }
+}
