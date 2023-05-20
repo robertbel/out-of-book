@@ -24,6 +24,8 @@ async function processGameData(playedGames, username) {
   }
 
   // Insert moves
+  let allMoves = [];
+
   for (const game of playedGames) {
     const gameId = await getGameId(game);
     const moves = getMovesFromPgn(game.pgn);
@@ -33,10 +35,18 @@ async function processGameData(playedGames, username) {
         const moveNumber = move.moveNumber;
         const notation = move.notation.notation;
 
-        await insertMove(gameId, moveNumber, notation);
+        allMoves.push({
+          game_id: gameId,
+          move_number: moveNumber,
+          move_notation: notation,
+          move_comment: null,
+          move_turn: 'w'
+        });
       }
     }
   }
+
+  await insertMoves(allMoves);
 }
 
 export default defineEventHandler(async () => {
