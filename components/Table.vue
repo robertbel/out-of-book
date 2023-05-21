@@ -3,7 +3,7 @@
     <div v-for="game in games" :key="game.id" class="game">
       <client-only>
         <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">
-          <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn, game?.game_id))" />
+          <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn, game?.id))" />
         </NuxtLink>
       </client-only>
       <div class="pgn">
@@ -36,7 +36,6 @@ const boardConfig = {
 
 const loadPgn = (api, pgn, gameId) => {
   api.loadPgn(pgn);
-  active.value = gameId; // Assuming you want to mark this game as active
 };
 </script>
 
