@@ -2,11 +2,12 @@
   <div class="game">
     <div class="back">
       <NuxtLink to="/">
-        Back to homepage
+        Back to homepage {{ active }}
       </NuxtLink>
     </div>
-    <TheChessboard class="beebee" />
-
+    <client-only>
+      <TheChessboard class="beebee" />
+    </client-only>
   </div>
 </template>
 

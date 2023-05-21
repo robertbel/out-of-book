@@ -13,11 +13,55 @@ datasource db {
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
-model moves {
-  id            Int     @id @default(autoincrement())
+model Players {
+  id             Int           @id @default(autoincrement())
+  username       String        @unique
+  Repertoires    Repertoires[]
+  GamesPlayers   Games[]
+  GamesOpponents Games[]       @relation("Opponents")
+}
+
+model Repertoires {
+  id              Int     @id @default(autoincrement())
+  player_id       Int
+  repertoire_name String  @unique
+  Players         Players @relation(fields: [player_id], references: [id])
+  Games           Games[]
+  Moves           Moves[]
+
+  @@index([player_id], name: "repertoire_player_id")
+}
+
+model Games {
+  id            Int         @id @default(autoincrement())
+  player_id     Int
+  opponent_id   Int
+  repertoire_id Int
+  game_link     String      @unique
+  played_as     String      @default("") @db.VarChar(1)
+  result        String
+  pgn           String?
+  Players       Players     @relation(fields: [player_id], references: [id])
+  Opponents     Players     @relation("Opponents", fields: [opponent_id], references: [id])
+  Repertoires   Repertoires @relation(fields: [repertoire_id], references: [id])
+  Moves         Moves[]
+
+  @@index([player_id], name: "games_player_id")
+  @@index([opponent_id], name: "games_opponent_id")
+  @@index([repertoire_id], name: "games_repertoire_id")
+}
+
+model Moves {
+  id            Int         @id @default(autoincrement())
   game_id       Int
+  repertoire_id Int
   move_number   Int
-  move_notation String
+  move_notation String      @db.VarChar(5)
   move_comment  String?
-  move_turn     String
+  move_turn     String      @default("") @db.VarChar(1)
+  Games         Games       @relation(fields: [game_id], references: [id])
+  Repertoires   Repertoires @relation(fields: [repertoire_id], references: [id])
+
+  @@index([game_id], name: "moves_game_id")
+  @@index([repertoire_id], name: "moves_repertoire_id")
 }

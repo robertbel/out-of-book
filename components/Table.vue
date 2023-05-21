@@ -1,14 +1,16 @@
 <template>
   <div class="games">
     <div v-for="game in games" :key="game.id" class="game">
-      <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id;">
-        <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn, game?.game_id))" />
-      </NuxtLink>
+      <client-only>
+        <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">
+          <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn, game?.game_id))" />
+        </NuxtLink>
+      </client-only>
       <div class="pgn">
-        <p>
-          <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">Id: {{ game?.id }}</NuxtLink>
-        </p>
-        <p>Color: {{ game?.played_as }}</p>
+        <div>
+          <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">{{ game?.id }}</NuxtLink>
+        </div>
+        <div>{{ game }}</div>
       </div>
     </div>
   </div>
