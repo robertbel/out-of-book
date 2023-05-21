@@ -21,6 +21,7 @@ import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
 const active = useState();
+console.log(useState('active'));
 
 const props = defineProps({
   games: {

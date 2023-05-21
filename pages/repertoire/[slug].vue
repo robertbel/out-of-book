@@ -2,7 +2,7 @@
   <div class="game">
     <div class="back">
       <NuxtLink to="/">
-        Back to homepage {{ active }}
+        Back to homepage
       </NuxtLink>
     </div>
     <client-only>
@@ -14,6 +14,8 @@
 <script setup>
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
+
+console.log(useState('active'));
 </script>
 
 <style scoped>
