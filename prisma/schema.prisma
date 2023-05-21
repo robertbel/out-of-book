@@ -13,26 +13,26 @@ datasource db {
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
-model Players {
+model players {
   id             Int           @id @default(autoincrement())
   username       String        @unique
-  Repertoires    Repertoires[]
-  GamesPlayers   Games[]
-  GamesOpponents Games[]       @relation("Opponents")
+  repertoires    repertoires[]
+  gmesPlayers    games[]
+  gamesOpponents games[]       @relation("Opponents")
 }
 
-model Repertoires {
+model repertoires {
   id              Int     @id @default(autoincrement())
   player_id       Int
   repertoire_name String  @unique
-  Players         Players @relation(fields: [player_id], references: [id])
-  Games           Games[]
-  Moves           Moves[]
+  players         players @relation(fields: [player_id], references: [id])
+  games           games[]
+  moves           moves[]
 
   @@index([player_id], name: "repertoire_player_id")
 }
 
-model Games {
+model games {
   id            Int         @id @default(autoincrement())
   player_id     Int
   opponent_id   Int
@@ -41,17 +41,17 @@ model Games {
   played_as     String      @default("") @db.VarChar(1)
   result        String
   pgn           String?
-  Players       Players     @relation(fields: [player_id], references: [id])
-  Opponents     Players     @relation("Opponents", fields: [opponent_id], references: [id])
-  Repertoires   Repertoires @relation(fields: [repertoire_id], references: [id])
-  Moves         Moves[]
+  players       players     @relation(fields: [player_id], references: [id])
+  opponents     players     @relation("Opponents", fields: [opponent_id], references: [id])
+  repertoires   repertoires @relation(fields: [repertoire_id], references: [id])
+  moves         moves[]
 
   @@index([player_id], name: "games_player_id")
   @@index([opponent_id], name: "games_opponent_id")
   @@index([repertoire_id], name: "games_repertoire_id")
 }
 
-model Moves {
+model moves {
   id            Int         @id @default(autoincrement())
   game_id       Int
   repertoire_id Int
@@ -59,8 +59,8 @@ model Moves {
   move_notation String      @db.VarChar(5)
   move_comment  String?
   move_turn     String      @default("") @db.VarChar(1)
-  Games         Games       @relation(fields: [game_id], references: [id])
-  Repertoires   Repertoires @relation(fields: [repertoire_id], references: [id])
+  games         games       @relation(fields: [game_id], references: [id])
+  repertoires   repertoires @relation(fields: [repertoire_id], references: [id])
 
   @@index([game_id], name: "moves_game_id")
   @@index([repertoire_id], name: "moves_repertoire_id")
