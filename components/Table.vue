@@ -5,12 +5,15 @@
         <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">
           <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn, game?.id))" />
         </NuxtLink>
+        <template #placeholder>
+          <ChessboardLoader />
+        </template>
       </client-only>
       <div class="pgn">
         <div>
           <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">{{ game?.id }}</NuxtLink>
         </div>
-        <div>{{ game }}</div>
+        <pre>{{ game }}</pre>
       </div>
     </div>
   </div>
@@ -21,7 +24,6 @@ import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
 const active = useState();
-console.log(useState('active'));
 
 const props = defineProps({
   games: {
@@ -67,6 +69,6 @@ const loadPgn = (api, pgn, gameId) => {
 
 .pgn pre {
   white-space: pre-wrap;
-  font-size: 0.75rem;
+  font-size: 0.5625rem;
 }
 </style>

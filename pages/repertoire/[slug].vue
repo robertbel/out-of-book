@@ -5,8 +5,11 @@
         Back to homepage
       </NuxtLink>
     </div>
-    <client-only>
+    <client-only placeholder="Loading...">
       <TheChessboard class="beebee" />
+      <template #placeholder>
+        <ChessboardLoader />
+      </template>
     </client-only>
   </div>
 </template>
@@ -14,8 +17,6 @@
 <script setup>
 import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
-
-console.log(useState('active'));
 </script>
 
 <style scoped>
