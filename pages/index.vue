@@ -1,24 +1,14 @@
 <script setup>
-import { useGames } from '~/composables/useGames';
-
-const { games, isLoading, isFetching, getGames, fetchData } = useGames();
-
-if (games.value.length === 0) {
-  getGames()
-}
-
+const { data: games } = await useFetch('/api/games');
 </script>
 
 <template>
+  <nav>
+    <NuxtLink to="/about">About</NuxtLink>
+  </nav>
   <main class="main">
-    <div class="actions">
-      <button @click="fetchData" :disabled="isLoading">Fetch Data</button>
-      <span v-if="isFetching">Getting new games ...</span>
-      <NuxtLink to="/test">Test</NuxtLink>
-    </div>
     <Table v-if="games" :games="games" />
-    <span v-else-if="isLoading">Loading games ...</span>
-    <span v-else>No games found.</span>
+    <div v-else>No games found.</div>
   </main>
 </template>
 

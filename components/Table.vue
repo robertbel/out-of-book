@@ -1,14 +1,20 @@
 <template>
   <div class="games">
     <div v-for="game in games" :key="game.id" class="game">
-      <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id;">
-        <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn, game?.game_id))" />
-      </NuxtLink>
+      <client-only>
+        <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">
+          <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn))" />
+        </NuxtLink>
+        <template #placeholder>
+          <ChessboardLoader />
+        </template>
+      </client-only>
       <div class="pgn">
-        <p>
-          <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">Id: {{ game?.id }}</NuxtLink>
-        </p>
-        <p>Color: {{ game?.played_as }}</p>
+        <div>
+          ID: <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">{{ game?.id }}</NuxtLink>
+        </div>
+        <div v-if="game.deviation">Deviation in <strong>{{ game.repertoires?.repertoire_name }}</strong> repertoir on move <strong>{{ game.deviation }}</strong></div>
+        <!-- <pre>{{ game }}</pre> -->
       </div>
     </div>
   </div>
@@ -29,11 +35,11 @@ const props = defineProps({
 
 const boardConfig = {
   coordinates: true,
+  viewOnly: true
 };
 
-const loadPgn = (api, pgn, gameId) => {
+const loadPgn = (api, pgn) => {
   api.loadPgn(pgn);
-  active.value = gameId; // Assuming you want to mark this game as active
 };
 </script>
 
@@ -65,6 +71,6 @@ const loadPgn = (api, pgn, gameId) => {
 
 .pgn pre {
   white-space: pre-wrap;
-  font-size: 0.75rem;
+  font-size: 0.5625rem;
 }
 </style>

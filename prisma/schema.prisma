@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["jsonProtocol"]
@@ -13,11 +10,55 @@ datasource db {
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
+model players {
+  id             Int           @id @default(autoincrement())
+  username       String        @unique
+  repertoires    repertoires[]
+  gmesPlayers    games[]
+  gamesOpponents games[]       @relation("Opponents")
+}
+
+model repertoires {
+  id              Int     @id @default(autoincrement())
+  player_id       Int
+  repertoire_name String  @unique
+  players         players @relation(fields: [player_id], references: [id])
+  games           games[]
+  moves           moves[]
+
+  @@index([player_id], name: "repertoire_player_id")
+}
+
+model games {
+  id            Int          @id @default(autoincrement())
+  player_id     Int
+  opponent_id   Int
+  repertoire_id Int?
+  game_link     String       @unique
+  played_as     String       @default("") @db.VarChar(1)
+  result        String
+  pgn           String?
+  players       players      @relation(fields: [player_id], references: [id])
+  opponents     players      @relation("Opponents", fields: [opponent_id], references: [id])
+  repertoires   repertoires? @relation(fields: [repertoire_id], references: [id])
+  moves         moves[]
+
+  @@index([player_id], name: "games_player_id")
+  @@index([opponent_id], name: "games_opponent_id")
+  @@index([repertoire_id], name: "games_repertoire_id")
+}
+
 model moves {
-  id            Int     @id @default(autoincrement())
-  game_id       Int
+  id            Int          @id @default(autoincrement())
+  game_id       Int?
+  repertoire_id Int?
   move_number   Int
-  move_notation String
+  move_notation String       @db.VarChar(5)
   move_comment  String?
-  move_turn     String
+  move_turn     String       @default("") @db.VarChar(1)
+  games         games?       @relation(fields: [game_id], references: [id])
+  repertoires   repertoires? @relation(fields: [repertoire_id], references: [id])
+
+  @@index([game_id], name: "moves_game_id")
+  @@index([repertoire_id], name: "moves_repertoire_id")
 }
