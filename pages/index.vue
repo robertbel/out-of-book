@@ -4,7 +4,7 @@ const { data: games } = await useFetch('/api/games');
 
 <template>
   <nav>
-    <NuxtLink to="/about">About us</NuxtLink>
+    <NuxtLink to="/about">About</NuxtLink>
   </nav>
   <main class="main">
     <Table v-if="games" :games="games" />
