@@ -3,7 +3,7 @@
     <div v-for="game in games" :key="game.id" class="game">
       <client-only>
         <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">
-          <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn, game?.id))" />
+          <TheChessboard class="beebee" :class="{ active: active === game.id }" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn))" />
         </NuxtLink>
         <template #placeholder>
           <ChessboardLoader />
@@ -11,9 +11,10 @@
       </client-only>
       <div class="pgn">
         <div>
-          <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">{{ game?.id }}</NuxtLink>
+          ID: <NuxtLink :to="`/repertoire/${game.id}`" @click.native="active = game.id">{{ game?.id }}</NuxtLink>
         </div>
-        <pre>{{ game }}</pre>
+        <div v-if="game.deviation">Deviation in <strong>{{ game.repertoires?.repertoire_name }}</strong> repertoir on move <strong>{{ game.deviation }}</strong></div>
+        <!-- <pre>{{ game }}</pre> -->
       </div>
     </div>
   </div>
@@ -34,9 +35,10 @@ const props = defineProps({
 
 const boardConfig = {
   coordinates: true,
+  viewOnly: true
 };
 
-const loadPgn = (api, pgn, gameId) => {
+const loadPgn = (api, pgn) => {
   api.loadPgn(pgn);
 };
 </script>

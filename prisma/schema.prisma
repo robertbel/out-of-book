@@ -30,17 +30,17 @@ model repertoires {
 }
 
 model games {
-  id            Int         @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   player_id     Int
   opponent_id   Int
-  repertoire_id Int
-  game_link     String      @unique
-  played_as     String      @default("") @db.VarChar(1)
+  repertoire_id Int?
+  game_link     String       @unique
+  played_as     String       @default("") @db.VarChar(1)
   result        String
   pgn           String?
-  players       players     @relation(fields: [player_id], references: [id])
-  opponents     players     @relation("Opponents", fields: [opponent_id], references: [id])
-  repertoires   repertoires @relation(fields: [repertoire_id], references: [id])
+  players       players      @relation(fields: [player_id], references: [id])
+  opponents     players      @relation("Opponents", fields: [opponent_id], references: [id])
+  repertoires   repertoires? @relation(fields: [repertoire_id], references: [id])
   moves         moves[]
 
   @@index([player_id], name: "games_player_id")
@@ -49,15 +49,15 @@ model games {
 }
 
 model moves {
-  id            Int         @id @default(autoincrement())
-  game_id       Int
-  repertoire_id Int
+  id            Int          @id @default(autoincrement())
+  game_id       Int?
+  repertoire_id Int?
   move_number   Int
-  move_notation String      @db.VarChar(5)
+  move_notation String       @db.VarChar(5)
   move_comment  String?
-  move_turn     String      @default("") @db.VarChar(1)
-  games         games       @relation(fields: [game_id], references: [id])
-  repertoires   repertoires @relation(fields: [repertoire_id], references: [id])
+  move_turn     String       @default("") @db.VarChar(1)
+  games         games?       @relation(fields: [game_id], references: [id])
+  repertoires   repertoires? @relation(fields: [repertoire_id], references: [id])
 
   @@index([game_id], name: "moves_game_id")
   @@index([repertoire_id], name: "moves_repertoire_id")
