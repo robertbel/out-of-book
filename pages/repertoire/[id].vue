@@ -24,7 +24,10 @@ const { data: game } = await useFetch('/api/games/' + route.params.id);
 
 const boardConfig = {
   coordinates: true,
-  viewOnly: true
+  viewOnly: true,
+  animation: {
+    enabled: false
+  }
 };
 
 const loadPgn = (api, pgn) => {
