@@ -56,6 +56,7 @@ model moves {
   move_notation String       @db.VarChar(5)
   move_comment  String?
   move_turn     String       @default("") @db.VarChar(1)
+  fen_notation  String?
   games         games?       @relation(fields: [game_id], references: [id])
   repertoires   repertoires? @relation(fields: [repertoire_id], references: [id])
 

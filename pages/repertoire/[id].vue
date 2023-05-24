@@ -6,7 +6,7 @@
       </NuxtLink>
     </div>
     <client-only placeholder="Loading...">
-      <TheChessboard class="beebee" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadPgn(api, game?.pgn))" />
+      <TheChessboard class="beebee" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadFen(api, game?.deviation.fen_notation))" />
       <template #placeholder>
         <ChessboardLoader />
       </template>
@@ -19,7 +19,7 @@ import { TheChessboard } from 'vue3-chessboard';
 import 'vue3-chessboard/style.css';
 
 const route = useRoute();
-console.log(route.params);
+
 const { data: game } = await useFetch('/api/games/' + route.params.id);
 
 const boardConfig = {
@@ -30,8 +30,8 @@ const boardConfig = {
   }
 };
 
-const loadPgn = (api, pgn) => {
-  api.loadPgn(pgn);
+const loadFen = (api, fen) => {
+  api.setPosition(fen);
 };
 </script>
 
