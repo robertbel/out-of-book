@@ -44,7 +44,6 @@ const boardConfig = {
 };
 
 const loadFen = (api, fen) => {
-  console.log(api.getLastMove());
   api.setPosition(fen);
 };
 </script>

@@ -5,12 +5,13 @@
         Back to homepage
       </NuxtLink>
     </div>
-    <client-only placeholder="Loading...">
+    <client-only>
       <TheChessboard class="beebee" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadFen(api, game?.deviation.fen_notation))" />
       <template #placeholder>
         <ChessboardLoader />
       </template>
     </client-only>
+    <pre>{{ game }}</pre>
   </div>
 </template>
 

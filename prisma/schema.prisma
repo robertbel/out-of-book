@@ -14,7 +14,7 @@ model players {
   id             Int           @id @default(autoincrement())
   username       String        @unique
   repertoires    repertoires[]
-  gmesPlayers    games[]
+  gamesPlayers   games[]
   gamesOpponents games[]       @relation("Opponents")
 }
 
@@ -57,6 +57,7 @@ model moves {
   move_comment  String?
   move_turn     String       @default("") @db.VarChar(1)
   fen_notation  String?
+  from_square   String
   games         games?       @relation(fields: [game_id], references: [id])
   repertoires   repertoires? @relation(fields: [repertoire_id], references: [id])
 
