@@ -3,22 +3,22 @@
   <div class="board">
     <div class="chessboard">
       <client-only>
-        <TheChessboard @board-created="(api) => (boardAPI = api)" @move="mov(boardAPI)" />
+        <TheChessboard @board-created="(api) => (boardAPI = api)" @move="updatePgn(boardAPI)" />
         <template #placeholder>
           <ChessboardLoader />
         </template>
       </client-only>
       <div class="notes">
-        <input type="text" v-model="note"><button @click="com(boardAPI, note)">Add</button>
+        <input type="text" v-model="moveComment"><button @click="addCommentToMove(boardAPI, moveComment)">Add</button>
       </div>
     </div>
     <aside class="side">
       <div class="moves">
-        {{ currPgn }}
+        {{ currentPgn }}
       </div>
       <div class="options">
         <div class="played-as">Played as: {{ playedAs }}</div>
-        <div class="flip" @click="flip(boardAPI)">Flip board</div>
+        <div class="flip" @click="flipBoard(boardAPI)">Flip board</div>
       </div> 
     </aside>
   </div>
@@ -30,25 +30,27 @@ import 'vue3-chessboard/style.css';
 
 const playedAs = ref('white');
 const boardAPI = ref();
-const currPgn = ref();
-const note = ref();
+const currentPgn = ref();
+const moveComment = ref();
 
-function mov(api) {
-  currPgn.value = api.getPgn();
+function updatePgn(api) {
+  currentPgn.value = api.getPgn();
 }
 
-function flip(api) {
-  api.toggleOrientation();
-  if(playedAs.value === 'white') {
-    playedAs.value = 'black';
-  } else {
-    playedAs.value = 'white';
+function flipBoard(api, playedAs) {
+  try {
+    api.toggleOrientation();
+
+    playedAs.value = playedAs.value === 'white' ? 'black' : 'white';
+  } catch (error) {
+    console.error("Failed to flip: ", error);
   }
 }
 
-function com(api, comment) {
-  api.game.setComment(comment)
-  currPgn.value = api.getPgn();
+function addCommentToMove(api, comment) {
+  api.game.setComment(comment);
+  moveComment.value = '';
+  currentPgn.value = api.getPgn();
 }
 </script>
 
