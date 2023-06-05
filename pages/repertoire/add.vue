@@ -121,6 +121,7 @@ const changePositionTo = (pgn, index) => {
   if (boardAPI.value) {
     setPosition(index);
     currentIndex.value = null;
+    pgnHistory.value.length = index;
     boardAPI.value.board.set({ viewOnly: false });
     boardAPI.value.loadPgn(pgn);
   }
