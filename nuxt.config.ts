@@ -3,4 +3,5 @@ export default defineNuxtConfig({
   experimental: {
     viewTransition: true,
   },
+  css: ["@/assets/css/reset.css", "@/assets/css/main.css"],
 });

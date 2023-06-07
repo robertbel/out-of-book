@@ -1,12 +1,17 @@
 <template>
-  <div class="game">
-    <div class="back">
-      <NuxtLink to="/">
-        Back to homepage
-      </NuxtLink>
-    </div>
+  <div class="page-title">
+    <h1>Details</h1>
+  </div>
+  <div>
     <client-only>
-      <TheChessboard class="beebee" :board-config="{ ...boardConfig, orientation: game?.played_as === 'w' ? 'white' : 'black' }" @board-created="(api) => (loadFen(api, game?.deviation.fen_notation))" />
+      <TheChessboard
+        class="beebee"
+        :board-config="{
+          ...boardConfig,
+          orientation: game?.played_as === 'w' ? 'white' : 'black',
+        }"
+        @board-created="(api) => loadFen(api, game?.deviation.fen_notation)"
+      />
       <template #placeholder>
         <ChessboardLoader />
       </template>
@@ -16,19 +21,19 @@
 </template>
 
 <script setup>
-import { TheChessboard } from 'vue3-chessboard';
-import 'vue3-chessboard/style.css';
+import { TheChessboard } from "vue3-chessboard";
+import "vue3-chessboard/style.css";
 
 const route = useRoute();
 
-const { data: game } = await useFetch('/api/games/' + route.params.id);
+const { data: game } = await useFetch("/api/games/" + route.params.id);
 
 const boardConfig = {
   coordinates: true,
   viewOnly: true,
   animation: {
-    enabled: false
-  }
+    enabled: false,
+  },
 };
 
 const loadFen = (api, fen) => {
@@ -37,12 +42,6 @@ const loadFen = (api, fen) => {
 </script>
 
 <style scoped>
-.back {
-  max-width: 700px;
-  margin-inline: auto;
-  padding-block: 0.5rem;
-}
-
 .beebee {
   view-transition-name: selected-board;
 }
