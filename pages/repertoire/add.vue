@@ -12,21 +12,27 @@
           <ChessboardLoader />
         </template>
       </client-only>
-      <div class="notes"><input type="text" /><button>Add comment</button></div>
+      <div class="notes">
+        <input type="text" v-model="commentInput" />
+        <button @click="addComment">Add comment</button>
+      </div>
     </div>
     <aside class="side">
       <div class="moves" v-if="history">
         <div v-for="(move, index) in history" :key="index" class="move">
           <div
-            @click="setPosition(index)"
+            @click="viewPosition(index)"
             class="move-notation"
             :class="{ active: index === currentIndex }"
           >
-            {{ index }} - {{ move.san }}
+            {{ move.san }}
+            <span class="comment" v-if="comments[index]">
+              - {{ comments[index] }}
+            </span>
           </div>
           <div
             v-if="index === currentIndex && index !== history.length - 1"
-            @click="changePositionTo(pgnHistory[index], index)"
+            @click="setPosition(pgnHistory[index], index)"
             class="icon-change-to"
           >
             <svg
@@ -48,14 +54,14 @@
         <div class="navigation">
           <button
             class="arrow left"
-            @click="setPosition(currentIndex - 1)"
+            @click="viewPosition(currentIndex - 1)"
             :disabled="currentIndex < 1"
           >
             prev
           </button>
           <button
             class="arrow right"
-            @click="setPosition(currentIndex + 1)"
+            @click="viewPosition(currentIndex + 1)"
             :disabled="
               currentIndex === null || currentIndex === history.length - 1
             "
@@ -67,6 +73,9 @@
       </div>
     </aside>
   </div>
+  <pre>
+    {{ comments }}
+  </pre>
   <pre>
     {{ pgnHistory }}
   </pre>
@@ -83,6 +92,8 @@ const boardAPI = ref();
 const history = ref([]);
 const pgnHistory = ref([]);
 const currentIndex = ref(null);
+const comments = ref([]);
+const commentInput = ref("");
 
 const boardConfig = {
   highlight: {
@@ -90,15 +101,28 @@ const boardConfig = {
   },
 };
 
+const addComment = () => {
+  if (boardAPI.value && currentIndex.value !== null) {
+    boardAPI.value.game.setComment(commentInput.value);
+    comments.value[currentIndex.value] = commentInput.value;
+  }
+};
+
 const updateHistory = () => {
   if (boardAPI.value) {
     history.value = boardAPI.value.getHistory({ verbose: true });
     pgnHistory.value.push(boardAPI.value.getPgn());
     currentIndex.value = history.value.length - 1;
+
+    // Make sure the comments sync up with the new move
+    const remainingComments = comments.value.slice(0, history.value.length);
+    comments.value = [...remainingComments];
+
+    commentInput.value = "";
   }
 };
 
-const setPosition = (index) => {
+const viewPosition = (index) => {
   if (boardAPI.value) {
     const toFen = history.value[index].after;
     const highlightMove = [history.value[index].from, history.value[index].to];
@@ -110,6 +134,8 @@ const setPosition = (index) => {
     });
     currentIndex.value = index;
 
+    commentInput.value = comments.value[currentIndex.value];
+
     //Make board editable again if last move is selected
     if (index === history.value.length - 1) {
       boardAPI.value.board.set({ viewOnly: false });
@@ -117,11 +143,13 @@ const setPosition = (index) => {
   }
 };
 
-const changePositionTo = (pgn, index) => {
+const setPosition = (pgn, index) => {
   if (boardAPI.value) {
-    setPosition(index);
+    viewPosition(index);
+
     currentIndex.value = null;
     pgnHistory.value.length = index;
+
     boardAPI.value.board.set({ viewOnly: false });
     boardAPI.value.loadPgn(pgn);
   }
