@@ -1,15 +1,15 @@
-import prisma from './prisma'
+import prisma from "./prisma";
 
 export async function getGames() {
   const games = await prisma.games.findMany({
     include: {
       repertoires: true,
       moves: {
-        orderBy: { id: 'asc' }
+        orderBy: { id: "asc" },
       },
     },
     where: { repertoire_id: { not: null } },
-    orderBy: { id: 'asc' }
+    orderBy: { id: "asc" },
   });
 
   for (let game of games) {
@@ -17,7 +17,7 @@ export async function getGames() {
       // Fetch repertoire moves
       const repertoireMoves = await prisma.moves.findMany({
         where: { repertoire_id: game.repertoires.id },
-        orderBy: { id: 'asc' }
+        orderBy: { id: "asc" },
       });
 
       game.deviation = findDeviation(game.moves, repertoireMoves);
@@ -45,24 +45,24 @@ export async function getGame(id) {
     include: {
       repertoires: true,
       moves: {
-        orderBy: { id: 'asc' }
-      }
+        orderBy: { id: "asc" },
+      },
     },
     where: {
       id: parseInt(id),
-    }
-  })
+    },
+  });
 
   if (game.repertoires) {
     // Fetch repertoire moves
     const repertoireMoves = await prisma.moves.findMany({
       where: { repertoire_id: game.repertoires.id },
-      orderBy: { id: 'asc' },
+      orderBy: { id: "asc" },
     });
 
     // Compare game and repertoire moves
     game.deviation = findDeviation(game.moves, repertoireMoves);
   }
 
-  return game
+  return game;
 }
