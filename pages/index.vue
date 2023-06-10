@@ -1,11 +1,17 @@
 <script setup>
-const { data: games } = await useFetch("/api/games");
+const state = useStore();
+
+await fetchGames();
+const games = computed(() => Object.values(state.value.games) || []);
+const loading = computed(() => games.value.length === 0);
 </script>
 
 <template>
   <div class="page-title">
     <h1>Games</h1>
   </div>
-  <Table v-if="games" :games="games" />
-  <div v-else>No games found.</div>
+  <div v-if="loading">Loading...</div>
+  <div v-else>
+    <Table :games="games" />
+  </div>
 </template>

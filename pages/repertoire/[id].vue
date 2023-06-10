@@ -25,8 +25,8 @@ import { TheChessboard } from "vue3-chessboard";
 import "vue3-chessboard/style.css";
 
 const route = useRoute();
-
-const { data: game } = await useFetch("/api/games/" + route.params.id);
+const id = computed(() => +route.params.id); //why we use this? Just readabilty?
+const { data: game } = await fetchGame(id.value);
 
 const boardConfig = {
   coordinates: true,
