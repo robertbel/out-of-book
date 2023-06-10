@@ -1,15 +1,24 @@
 export const useStore = () =>
   useState("store", () => ({
-    games: [],
+    games: {},
   }));
 
 export function fetchGames() {
   const state = useStore();
 
   return loadReactiveState(
-    () => (state.value.games.length ? state.value.games : undefined),
+    () =>
+      Object.keys(state.value.games).length
+        ? Object.values(state.value.games)
+        : undefined,
     (games) => {
-      state.value.games = games;
+      games.filter(Boolean).forEach((game) => {
+        if (state.value.games[game.id]) {
+          Object.assign(state.value.games[game.id], game);
+        } else {
+          state.value.games[game.id] = game;
+        }
+      });
     },
     () => $fetch("/api/games")
   );
@@ -19,10 +28,9 @@ export function fetchGame(id) {
   const state = useStore();
 
   return loadReactiveState(
-    () => state.value.games.find((game) => game.id === id),
+    () => state.value.games[id],
     (game) => {
-      const gameIndex = state.value.games.findIndex((game) => game.id === id);
-      state.value.games[gameIndex] = game;
+      state.value.games[id] = game;
     },
     () => $fetch(`/api/games/${id}`)
   );
