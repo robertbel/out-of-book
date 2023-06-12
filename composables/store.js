@@ -8,7 +8,7 @@ export function fetchGames() {
 
   return loadReactiveState(
     () =>
-      Object.keys(state.value.games).length
+      Object.keys(state.value.games).length > 1
         ? Object.values(state.value.games)
         : undefined,
     (games) => {
@@ -36,7 +36,7 @@ export function fetchGame(id) {
   );
 }
 
-export async function loadReactiveState(getter, setter, fetcher, initialData) {
+export async function loadReactiveState(getter, setter, fetcher) {
   const reactiveData = computed({
     get: getter,
     set: setter,
@@ -45,10 +45,6 @@ export async function loadReactiveState(getter, setter, fetcher, initialData) {
   const isFetching = ref(false);
 
   if (reactiveData.value == null) {
-    if (initialData != null) {
-      reactiveData.value = initialData;
-    }
-
     const fetchData = async () => {
       try {
         isFetching.value = true;

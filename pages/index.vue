@@ -1,6 +1,5 @@
 <script setup>
 const state = useStore();
-
 await fetchGames();
 const games = computed(() => Object.values(state.value.games) || []);
 const loading = computed(() => games.value.length === 0);

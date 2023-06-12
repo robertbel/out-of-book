@@ -25,7 +25,7 @@ import { TheChessboard } from "vue3-chessboard";
 import "vue3-chessboard/style.css";
 
 const route = useRoute();
-const id = computed(() => +route.params.id); //why we use this? Just readabilty?
+const id = computed(() => +route.params.id);
 const { data: game } = await fetchGame(id.value);
 
 const boardConfig = {
