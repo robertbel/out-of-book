@@ -1,11 +1,9 @@
 <template>
   <header class="header">
     <nav class="navigation">
-      <NuxtLink class="navigation-item" to="/">Games</NuxtLink>
-      <NuxtLink class="navigation-item" to="/repertoire/add"
-        >Repertoires</NuxtLink
-      >
-      <NuxtLink class="navigation-item" to="/about">About us</NuxtLink>
+      <NuxtLink class="navigation-item" to="/games">Games</NuxtLink>
+      <NuxtLink class="navigation-item" to="/repertoires">Repertoires</NuxtLink>
+      <NuxtLink class="navigation-item" to="/study">Study</NuxtLink>
     </nav>
     <div class="user">
       <div class="user-avatar"></div>
