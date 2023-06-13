@@ -5,5 +5,8 @@
   <div>
     <NuxtLink to="/repertoires/add">Add repertoires</NuxtLink>
   </div>
-  <div>In progress..</div>
+  <div>
+    <div><NuxtLink to="/repertoires/1">London system</NuxtLink></div>
+    <div><NuxtLink to="/repertoires/1">Stafford gambit</NuxtLink></div>
+  </div>
 </template>
