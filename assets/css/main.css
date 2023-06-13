@@ -20,3 +20,12 @@ body {
   place-items: center;
   padding-block: 3rem;
 }
+
+.button-link {
+  background-color: #eeeefc;
+  color: #111115;
+  text-decoration: none;
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+  border-radius: 0.375rem;
+}

@@ -3,7 +3,7 @@
     <h1>{ title }</h1>
   </div>
   <div>
-    <NuxtLink to="/repertoires/add/line">Add line</NuxtLink>
+    <NuxtLink class="button-link" to="/repertoires/add/line">Add line</NuxtLink>
   </div>
   <div>
     <div>Line 1</div>
